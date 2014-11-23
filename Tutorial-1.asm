@@ -7,7 +7,25 @@
 ; Overview:
 ;
 ; A program which demonstrates the basic functionality of the PIC controller.
-; 
+;
+;
+; --- Running the Program in the Simulator ---
+;
+; Right click on the project in the Projects pane, choose "Set as Main Project".
+; Click Window/PIC Memory View/SFRs to view the Special Function Registers.
+; Click Window/PIC Memory View/File Registers to view the data memory.
+; Search for "start:" and set a breakpoint on the next line.
+; Click the "Debug Main Project" icon in the toolbar above.
+; If a window appears with a message that the "previous tool is no longer available", click on
+;   "Simulator" and then click "OK".
+; Step through the program and watch the SFR and File Register windows to observe changes to data.
+; Right click in the source file window to add a watch to any memory location. Gobals do not
+;  seem to be supported for variables declared in a cblock, so the actual memory location must
+;  be entered. Enter the memory address in the form: 0x20
+; To find the actual memory location for a symbol (such as "flags" in this project), open the
+;  Tutorial-1.lst file in the Projects pane. The addresses of all symbols will be shown to the
+;  far left next to each symbol.
+;
 ;--------------------------------------------------------------------------------------------------
 ; Notes on PCLATH -- not necessary to understand for beginners
 ;
@@ -306,6 +324,10 @@ start:
 
     call    setup               ; preset variables and configure hardware
 
+    call    demoCode
+
+    call    studentCode
+
 mainLoop:
 
 
@@ -368,17 +390,31 @@ setup:
 ;--------------------------------------------------------------------------------------------------
 
 ;--------------------------------------------------------------------------------------------------
-; hunterCode
+; demoCode
 ;
-; Test area for Hunter's code.
+; Demonstration of different software operations.
 ;
 
-hunterCode:
+demoCode:
 
 
     return
 
-; end of hunterCode
+; end of demoCode
+;--------------------------------------------------------------------------------------------------
+
+;--------------------------------------------------------------------------------------------------
+; studentCode
+;
+; Test area for student's code.
+;
+
+studentCode:
+
+
+    return
+
+; end of studentCode
 ;--------------------------------------------------------------------------------------------------
 
 ;--------------------------------------------------------------------------------------------------
