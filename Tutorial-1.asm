@@ -397,10 +397,58 @@ setup:
 
 demoCode:
 
+    ; use scratch 0 as a loop counter
+
+    banksel flags
+
+    movlw   scratch3           ; point to first byte to be set
+    movwf   FSR0L
+
+    movlw   .3
+
+    call    zeroBlock
+
+    movlw   scratch8           ; point to first byte to be set
+    movwf   FSR0L
+
+    movlw   .3
+
+    call    zeroBlock
 
     return
 
 ; end of demoCode
+;--------------------------------------------------------------------------------------------------
+
+;--------------------------------------------------------------------------------------------------
+; zeroBlock
+;
+; Zeroes a block of memory
+;
+; On entry:
+;
+; WREG = # of bytes to clear
+; FSR0L = first byte in block to be cleared
+; Appropriate bank should already be selected
+;
+
+zeroBlock:
+
+    movwf   scratch0
+
+    movlw   0x00
+
+dcLoop1:
+
+    movwf   INDF0
+    incf    FSR0L, f
+
+    decfsz  scratch0, f
+    goto    dcLoop1
+
+    return
+
+; end of zeroBlock
 ;--------------------------------------------------------------------------------------------------
 
 ;--------------------------------------------------------------------------------------------------
