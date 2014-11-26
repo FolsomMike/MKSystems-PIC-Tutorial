@@ -397,23 +397,16 @@ setup:
 
 demoCode:
 
-    ; use scratch 0 as a loop counter
-
     banksel flags
 
-    movlw   scratch3           ; point to first byte to be set
+    movlw   scratch1            ; point to first byte to be copied
     movwf   FSR0L
+    movlw   scratch4            ; point to first byte to be copied to
+    movwf   FSR1L
 
-    movlw   .3
+    movlw   .3                  ; number of bytes to copy
 
-    call    zeroBlock
-
-    movlw   scratch8           ; point to first byte to be set
-    movwf   FSR0L
-
-    movlw   .3
-
-    call    zeroBlock
+    call    copyBlock
 
     return
 
@@ -438,13 +431,13 @@ zeroBlock:
 
     movlw   0x00
 
-dcLoop1:
+zBLoop1:
 
     movwf   INDF0
     incf    FSR0L, f
 
     decfsz  scratch0, f
-    goto    dcLoop1
+    goto    zBLoop1
 
     return
 
@@ -466,7 +459,25 @@ dcLoop1:
 
 copyBlock:
 
-    // Hunter -- add code for this function here.
+    ; number of bytes to copy
+    movwf   scratch0
+
+
+    cBLoop1:
+
+        ; pull byte from source
+        movf   INDF0, w
+
+        ; put byte into destination
+        movwf   INDF1
+
+        ; increment the source and
+        ; destination byte positions
+        incf    FSR0L, f
+        incf    FSR1L, f
+
+        decfsz  scratch0, f
+        goto    cBLoop1
 
     return
 
