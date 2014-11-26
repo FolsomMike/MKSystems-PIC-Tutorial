@@ -462,26 +462,99 @@ copyBlock:
     ; number of bytes to copy
     movwf   scratch0
 
+cBLoop1:
 
-    cBLoop1:
+    ; pull byte from source
+    movf   INDF0, w
 
-        ; pull byte from source
-        movf   INDF0, w
+    ; put byte into destination
+    movwf   INDF1
 
-        ; put byte into destination
-        movwf   INDF1
+    ; increment the source and
+    ; destination byte positions
+    incf    FSR0L, f
+    incf    FSR1L, f
 
-        ; increment the source and
-        ; destination byte positions
-        incf    FSR0L, f
-        incf    FSR1L, f
-
-        decfsz  scratch0, f
-        goto    cBLoop1
+    decfsz  scratch0, f
+    goto    cBLoop1
 
     return
 
 ; end of copyBlock
+;--------------------------------------------------------------------------------------------------
+
+;--------------------------------------------------------------------------------------------------
+; add3ByteVariables
+;
+; Adds two three-byte binary variables together and stores the result in the first variable.
+;
+; The variables are stored in Big-endian format; the MSB is stored first.
+;
+; Example:
+;
+; Variable1 = 0x123456      Variable2 = 0xfedca0
+;
+;   0x123456
+; + 0xfedca0
+;-----------
+;  0x11110f6
+;
+; In memory on entry, variables stored as:
+;
+; (Variable1)
+;   0x12        (some memory location such as scratch2)(FSR0L points here on entry)
+;   0x34        (at address scratch3)
+;   0x56        (at address scratch4)
+;
+; (Variable2)
+;   0xfe        (some memory location such as scratch5) (FSR1L points here on entry)
+;   0xdc        (at address scratch6)
+;   0xa0        (at address (scratch7)
+;
+; In memory on exit, result stored in Variable1 as:
+;
+; (Variable1)
+;   0x11        (some memory location such as scratch2)
+;   0x10        (at address scratch3)
+;   0xf6        (at address scratch4)
+;
+; Note that the actual result is 0x11110f6 which is 7 hex digits. Since our result variable only
+; holds 6 hex digits (3 bytes with 2 hex digits each), the top digit will be lost -- this is
+; actually the carry from the add of the MSBs. This is called an overflow error and is normally a
+; bad thing but it is a good test condition here.
+;
+; On entry:
+;
+; FSR0L -> MSB of Variable1 (scratch2 in the above example)
+; FSR1L -> MSB of Variable2 (scratch5 in the above example)
+;
+; Bank Selection = Don't Care...Indirect addressing does not use bank register.
+;
+; On exit:
+;
+; Variable1 = Variable1 + Variable2
+;
+
+add3ByteVariables:
+
+; Hints
+;
+; Add the two LSBs (least sigificant byte) first without carry -- store in LSB of Variable1
+; Add the middle bytes with carry -- store in middle byte of Variable1
+; Add the MSBs with carry -- store in MSB of Variable 1
+; If the add of the MSBs results in a carry, it is ignored; this is an overflow error and the
+;  answer will be wrong.
+;
+; Really Important Hint
+;
+; On entry, FSR0L and FSR1L point at the MSB of each variable, but you need to start with the LSB.
+; Both pointers must first be moved to the LSBs before starting.
+; The FSR*L registers must be decremented between adds to walk from the LSBs to the MSBs.
+;
+
+    return
+
+; end of add3ByteVariables
 ;--------------------------------------------------------------------------------------------------
 
 ;--------------------------------------------------------------------------------------------------
