@@ -452,6 +452,28 @@ dcLoop1:
 ;--------------------------------------------------------------------------------------------------
 
 ;--------------------------------------------------------------------------------------------------
+; copyBlock
+;
+; Copies a block of memory from one location to another.
+;
+; On entry:
+;
+; WREG = Number of bytes to copy
+; FSR0L = first byte address in source block
+; FSR1L = first byte address in destination block
+; Appropriate bank should already be selected
+;
+
+copyBlock:
+
+    // Hunter -- add code for this function here.
+
+    return
+
+; end of copyBlock
+;--------------------------------------------------------------------------------------------------
+
+;--------------------------------------------------------------------------------------------------
 ; studentCode
 ;
 ; Test area for student's code.
